@@ -57,6 +57,10 @@ li {
   text-decoration: underline;
 }
 
+.heading {
+  display: inline;
+}
+
 #modal-container.is-visible {
   display: block;
 }
