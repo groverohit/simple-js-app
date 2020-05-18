@@ -3,10 +3,35 @@ var pokemonRepository = (function(){
   //an array containing pokemon obects with name, height and types
   var pokemonList = [];
 
+  //the modal container
+  var modalContainer = document.querySelector('#modal-container');
+
+  //function to show the modal
+  function showModal(title, text, url){
+    var modal = document.querySelector('.modal');
+    var closeButton = document.querySelector('.modal-close');
+
+    //show pokemon name, height and image in modal
+    document.querySelector('.modal-title').innerHTML = title;
+    document.querySelector('.modal-text').innerHTML = "Height = " + text;
+    document.querySelector('.modal-image').innerHTML = '<img src="' + url + '"/>';
+
+    modalContainer.classList.add('is-visible');
+
+    //event listener to hide modal on button click
+    closeButton.addEventListener('click', hideModal);
+  }
+
+  //function to hide the modal
+  function hideModal(){
+    var modalContainer = document.querySelector('#modal-container');
+    modalContainer.classList.remove('is-visible');
+  }
+
   //function to log selected pokemon details from the url
   function showDetails(pokemon){
     loadDetails(pokemon).then(function() {
-      console.log(pokemon);
+      showModal(pokemon.name, pokemon.height, pokemon.imageUrl);
     });
   }
 
@@ -67,6 +92,22 @@ var pokemonRepository = (function(){
     });
   }
 
+  //addEventListener for "Escape" key on the modal
+  window.addEventListener('keydown', (e) => {
+    var modalContainer = document.querySelector('#modal-container');
+    if(e.key === 'Escape' && modalContainer.classList.contains('is-visible')) {
+      hideModal();
+    }
+  });
+
+  //function to close the modal if user clicks on overlay
+  modalContainer.addEventListener('click', (e) => {
+  var target = e.target;
+  if (target === modalContainer) {
+    hideModal();
+    }
+  });
+
 
   //make functions accessible from outside the object
   return{
@@ -75,7 +116,9 @@ var pokemonRepository = (function(){
     loadList: loadList,
     loadDetails: loadDetails,
     addListItem: addListItem,
-    showDetails: showDetails
+    showDetails: showDetails,
+    showModal: showModal,
+    hideModal: hideModal
   }
 
 })();
@@ -83,7 +126,7 @@ var pokemonRepository = (function(){
 //call loadList function
 pokemonRepository.loadList().then(function(){
   //add each pokemon as list item
-  pokemonRepository.getAll().forEach(function(pokemon) {
-    pokemonRepository.addListItem(pokemon);
+pokemonRepository.getAll().forEach(function(pokemon) {
+  pokemonRepository.addListItem(pokemon);
   });
 });
